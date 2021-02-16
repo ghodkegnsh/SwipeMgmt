@@ -32,10 +32,6 @@ public class Swipe {
 	private Employee employee;
 	
 	@ManyToOne
-	@JoinColumn(name = "scannerId", nullable = false)
-	private Scanner scanner;
-
-	@ManyToOne
 	@JoinColumn(name = "facilityId", nullable = false)
 	private Facility facility;
 
@@ -45,7 +41,7 @@ public class Swipe {
 	}
 
 	public Swipe(int swipeId, LocalDateTime signInTime, LocalDateTime signOutTime,LocalTime workHr,
-			Employee employee, Facility facility, Scanner scanner) {
+			Employee employee, Facility facility) {
 		super();
 		this.swipeId = swipeId;
 		this.signInTime = signInTime;
@@ -53,7 +49,7 @@ public class Swipe {
 		this.workHr=workHr;
 		this.employee = employee;
 		this.facility = facility;
-		this.scanner=scanner;
+		//this.scanner=scanner;
 	}
 
 	public LocalTime getWorkHr() {
@@ -106,17 +102,11 @@ public class Swipe {
 
 	@Override
 	public String toString() {
-		return "Swipe [swipeId=" + swipeId + ", scanner=" + scanner + ", signInTime=" + signInTime
+		return "Swipe [swipeId=" + swipeId  + ", signInTime=" + signInTime
 				+ ", signOutTime=" + signOutTime + ", employee=" + employee + ", facility=" + facility + "]";
 	}
 
-	public Scanner getScanner() {
-		return scanner;
-	}
 
-	public void setScanner(Scanner scanner) {
-		this.scanner = scanner;
-	}
 	
 	
 

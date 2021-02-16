@@ -14,4 +14,7 @@ public interface SwipeRepository extends JpaRepository<Swipe, Integer> {
 	@Query(value="Select * from swipe where emp_id=:empId AND facility_id=:facilityId",nativeQuery = true)
 	List<Swipe> findByEmpIdAndFacilityId(int empId, int facilityId);
 
+	@Query(value="Select * from swipe where emp_id=:empId",nativeQuery = true)
+	List<Swipe> findByEmpId(int empId);
+
 }
