@@ -24,6 +24,8 @@ public class Swipe {
 	private LocalDateTime signInTime;
 	@Column
 	private LocalDateTime signOutTime;
+	@Column
+	private float workigHr;
 
 	@ManyToOne
 	@JoinColumn(name = "empId", nullable = false)
@@ -42,15 +44,24 @@ public class Swipe {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Swipe(int swipeId, LocalDateTime signInTime, LocalDateTime signOutTime,
+	public Swipe(int swipeId, LocalDateTime signInTime, LocalDateTime signOutTime,float workigHr,
 			Employee employee, Facility facility, Scanner scanner) {
 		super();
 		this.swipeId = swipeId;
 		this.signInTime = signInTime;
 		this.signOutTime = signOutTime;
+		this.workigHr=workigHr;
 		this.employee = employee;
 		this.facility = facility;
 		this.scanner=scanner;
+	}
+
+	public float getWorkigHr() {
+		return workigHr;
+	}
+
+	public void setWorkigHr(float workigHr) {
+		this.workigHr = workigHr;
 	}
 
 	public int getSwipeId() {
