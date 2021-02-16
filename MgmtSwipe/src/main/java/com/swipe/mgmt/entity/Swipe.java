@@ -1,7 +1,8 @@
 package com.swipe.mgmt.entity;
 
 import java.time.LocalDateTime;
-import javax.persistence.CascadeType;
+import java.time.LocalTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -25,7 +25,7 @@ public class Swipe {
 	@Column
 	private LocalDateTime signOutTime;
 	@Column
-	private float workigHr;
+	private LocalTime workHr;
 
 	@ManyToOne
 	@JoinColumn(name = "empId", nullable = false)
@@ -44,24 +44,24 @@ public class Swipe {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Swipe(int swipeId, LocalDateTime signInTime, LocalDateTime signOutTime,float workigHr,
+	public Swipe(int swipeId, LocalDateTime signInTime, LocalDateTime signOutTime,LocalTime workHr,
 			Employee employee, Facility facility, Scanner scanner) {
 		super();
 		this.swipeId = swipeId;
 		this.signInTime = signInTime;
 		this.signOutTime = signOutTime;
-		this.workigHr=workigHr;
+		this.workHr=workHr;
 		this.employee = employee;
 		this.facility = facility;
 		this.scanner=scanner;
 	}
 
-	public float getWorkigHr() {
-		return workigHr;
+	public LocalTime getWorkHr() {
+		return workHr;
 	}
 
-	public void setWorkigHr(float workigHr) {
-		this.workigHr = workigHr;
+	public void setWorkHr(LocalTime workHr) {
+		this.workHr = workHr;
 	}
 
 	public int getSwipeId() {

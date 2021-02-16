@@ -1,6 +1,9 @@
 package com.swipe.mgmt.service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,8 +54,17 @@ public class SwipeService {
 				swipeRepository.save(newSwipe);
 				return "Signed In Successfully!";
 			}else if(scanner.get().getScannerType().equals("OUT")){
-				Swipe swipeOut=swipeRepository.findByEmpIdAndFacilityId(empId,facilityId);
-				if(swipeOut!=null && swipeOut.getScanner().getScannerType()=="IN") {
+				LocalDateTime signOutTime = null;
+				Swipe swipeOut=swipeRepository.findByEmpIdAndFacilityIdAndScannerId(empId,facilityId,scannerId);
+				System.out.println(swipeOut.getSwipeId()); 
+				if(swipeOut!=null && swipeOut.getScanner().getScannerType().equals("IN")) {
+					
+					LocalDateTime tempDateTime=swipeOut.getSignInTime();
+					long hours = tempDateTime.until( instance, ChronoUnit.HOURS );
+					long minutes = tempDateTime.until( instance, ChronoUnit.MINUTES );
+					long seconds = tempDateTime.until( instance, ChronoUnit.SECONDS );
+					LocalTime retrievedTime =LocalTime.of((int)hours, (int)minutes, (int)seconds);
+					swipeOut.setWorkHr(retrievedTime);
 					swipeOut.setScanner(scanner.get());
 					swipeOut.setSignOutTime(instance);
 					swipeRepository.save(swipeOut);
