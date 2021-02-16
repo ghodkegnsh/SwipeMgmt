@@ -11,10 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.swipe.mgmt.entity.Employee;
 import com.swipe.mgmt.entity.Facility;
-import com.swipe.mgmt.entity.Scanner;
 import com.swipe.mgmt.entity.Swipe;
 import com.swipe.mgmt.repository.EmployeeRepository;
-import com.swipe.mgmt.repository.ScannerRepository;
 import com.swipe.mgmt.repository.SwipeRepository;
 
 import com.swipe.mgmt.repository.FacilityRepository;
@@ -29,57 +27,55 @@ public class SwipeService {
 	EmployeeRepository employeeRepository;
 
 	@Autowired
-	ScannerRepository scannerRepository;
-
-	@Autowired
 	FacilityRepository facilityRepository;
 
-	LocalDateTime instance = LocalDateTime.now();
+	private static LocalDateTime instance = LocalDateTime.now();
 
-	public String empSigning(int empId, int facilityId, int scannerId) {
+	public String empSignIn(int empId, int facilityId) {
 		Optional<Employee> employee = employeeRepository.findByEmpId(empId);
-		System.out.println(employee);
-		Optional<Scanner> scanner = scannerRepository.findByScannerId(scannerId);
 		Optional<Facility> facility = facilityRepository.findByFacilityId(facilityId);
-
-		if (employee.isPresent() && scanner.isPresent()&& facility.isPresent()) {
-			if (scanner.get().getScannerType().equals("IN")) {
-				Swipe newSwipe = new Swipe();
-				newSwipe.setEmployee(employee.get());
-				newSwipe.setFacility(facility.get());
-				newSwipe.setScanner(scanner.get());
-				newSwipe.setSignInTime(instance);
-				swipeRepository.save(newSwipe);
-				return "Signed In Successfully!";
-			} else if (scanner.get().getScannerType().equals("OUT")) {
-				List<Swipe> swipeOut = swipeRepository.findByEmpIdAndFacilityId(empId, facilityId);
-				for (Swipe swipe : swipeOut) {
-					if (swipe.getSignOutTime() == null) {
-
-						if (swipe.getScanner().getScannerType().equals("IN")) {
-
-							LocalDateTime tempDateTime = swipe.getSignInTime();
-							long hours = tempDateTime.until(instance, ChronoUnit.HOURS);
-							tempDateTime = tempDateTime.plusHours(hours);
-							long minutes = tempDateTime.until(instance, ChronoUnit.MINUTES);
-							tempDateTime = tempDateTime.plusMinutes(minutes);
-							long seconds = tempDateTime.until(instance, ChronoUnit.SECONDS);
-							LocalTime retrievedTime = LocalTime.of((int) hours, (int) minutes, (int) seconds);
-							swipe.setWorkHr(retrievedTime);
-							swipe.setScanner(scanner.get());
-							swipe.setSignOutTime(instance);
-							swipeRepository.save(swipe);
-							return "Signed Out Successfully!";
-						}
-						return "Contact admin :-" + facility.get().getFacilityContact();
-
-					}
+		List<Swipe> swipeOut = swipeRepository.findByEmpId(empId);
+		if (!swipeOut.isEmpty()) {
+			for (Swipe swipe : swipeOut) {
+				if (swipe.getEmployee() == employee.get() && swipe.getSignOutTime() == null) {
+					return "You need to SignOut First from " + swipe.getFacility().getFacilityName();
 				}
 			}
-			return "Check wheather you have entered correct details.";
+		}
+		if (employee.isPresent() && facility.isPresent()) {
+			Swipe newSwipe = new Swipe();
+			newSwipe.setEmployee(employee.get());
+			newSwipe.setFacility(facility.get());
+			newSwipe.setSignInTime(instance);
+			swipeRepository.save(newSwipe);
+			return "Signed In Successfully!";
 
 		}
 		return "Check wheather you have entered correct details.";
+
+	}
+
+	public String empSignOut(int empId, int facilityId) {
+		Optional<Facility> facility = facilityRepository.findByFacilityId(facilityId);
+		List<Swipe> swipeOut = swipeRepository.findByEmpId(empId);
+		for (Swipe swipe : swipeOut) {
+			if (swipe.getSignOutTime() == null) {
+				LocalDateTime tempDateTime = swipe.getSignInTime();
+				long hours = tempDateTime.until(instance, ChronoUnit.HOURS);
+				tempDateTime = tempDateTime.plusHours(hours);
+				long minutes = tempDateTime.until(instance, ChronoUnit.MINUTES);
+				tempDateTime = tempDateTime.plusMinutes(minutes);
+				long seconds = tempDateTime.until(instance, ChronoUnit.SECONDS);
+				LocalTime retrievedTime = LocalTime.of((int) hours, (int) minutes, (int) seconds);
+				swipe.setWorkHr(retrievedTime);
+				swipe.setSignOutTime(instance);
+				swipeRepository.save(swipe);
+				return "Signed Out Successfully!";
+			}
+
+		}
+		return "You Need to SignIn to " + facility.get().getFacilityName();
+
 	}
 
 }

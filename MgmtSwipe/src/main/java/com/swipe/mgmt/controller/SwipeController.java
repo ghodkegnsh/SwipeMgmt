@@ -7,25 +7,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.swipe.mgmt.service.SwipeService;
+
 @RestController
 @RequestMapping("/swipe")
 public class SwipeController {
-	
+
 	@Autowired
 	SwipeService swipeService;
-	
+
 	@PostMapping("/signin")
-	public String empSignIn(@RequestParam int empId,@RequestParam int facilityId,@RequestParam int scannerId) {
-		return swipeService.empSigning(empId,facilityId,scannerId);
-		
+	public String empSignIn(@RequestParam int empId, @RequestParam int facilityId) {
+		return swipeService.empSignIn(empId, facilityId);
+
 	}
-	
+
 	@PostMapping("/signout")
-	public String empSignOut(@RequestParam int empId,@RequestParam int facilityId,@RequestParam int scannerId) {
-		return swipeService.empSigning(empId,facilityId,scannerId);
-		
+	public String empSignOut(@RequestParam int empId, @RequestParam int facilityId) {
+		return swipeService.empSignOut(empId, facilityId);
+
 	}
-	
+
 	/*
 	 * Services
 	 * 
